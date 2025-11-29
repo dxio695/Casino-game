@@ -111,7 +111,7 @@ def opening_cutscene():  # This will be the final scene after simple animation w
 
 
 
-    print("hello")
+    
 
 
 
