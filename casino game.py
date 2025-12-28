@@ -1,6 +1,7 @@
 import random
 import time
 import os
+import curses
 
 # █ ▓ ▒ ░
 
@@ -171,6 +172,7 @@ def opening_cutscene():
         time.sleep(0.18)
 
 
+def game(stdscr):
 
 
 
