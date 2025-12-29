@@ -174,7 +174,7 @@ def opening_cutscene():
 
 def opening_gate(stdscr):
     stdscr.clear()
-    stdscr
+    
 
 
 
