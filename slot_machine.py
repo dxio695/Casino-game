@@ -1,3 +1,7 @@
+import curses
+
+
+
 def slot_cutscene():
     pass
 
@@ -14,8 +18,9 @@ def options():
 
 
 
-def play():
-    pass
+def play(stdscr):
+    
+    
 
 
 
