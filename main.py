@@ -16,6 +16,9 @@ RED     = "\033[31m"
 GREEN   = "\033[32m"
 LIGHT_BLUE = "\033[38;2;100;160;210m"
 
+BRIGHT = "\033[1m"
+BACK_BRIGHT_YELLOW = "\033[103m" # for 7 in slot machine
+
 RESET   = "\033[0m"
 
 
