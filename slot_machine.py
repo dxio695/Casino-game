@@ -3,8 +3,8 @@ import time
 import random
 import os
 
-base_dir = os.path.dirname(os.path.abspath(__file__)) # get the base directory of the absolue path of current file slot_machine.py
-csv_abs_path = os.path.join(base_dir, "payout-rate.csv") # get the absolute path of the file payout-rate.csv
+base_dir = os.path.dirname(os.path.abspath(__file__))  # get the base directory of the absolue path of current file slot_machine.py
+csv_abs_path = os.path.join(base_dir, "payout-rate.csv")  # get the absolute path of the file payout-rate.csv
 
 # get payout data from payout-rate.csv
 with open(csv_abs_path, "r") as file:
@@ -29,12 +29,6 @@ MACHINE = (
 )
 
 
-show_all_button = (
-    "┌──────────┐",
-    "│ SHOW ALL │",
-    "└──────────┘",
-)
-
 
 # symbols = ["C", "L", "W", "D", "|", "7"]
 
@@ -45,6 +39,7 @@ machine_width = 43
 
 def play_slot(stdscr):
     curses.curs_set(0)
+    stdscr.nodelay(True)
 
     # enable colors
     curses.start_color()
@@ -95,6 +90,22 @@ def play_slot(stdscr):
     stdscr.addstr(5, 1, " = BAR 🟫")
 
 
+    # DRAW MACHINE
+    # center machine#
+    scr_h, scr_w = stdscr.getmaxyx()  #screen height, screen width
+
+    top = (scr_h - machine_height) // 2 - 4  #first row the machine art starts to print
+    left = (scr_w - machine_width) // 2 - 2  #first column the machine art starts to print
+
+    # draw machine frame
+    for i, line in enumerate(MACHINE):
+        stdscr.addstr(top + i, left, line)
+
+    # buttons
+    stdscr.addstr(top + 13, left, "      SPACE = spin          Q = quit")
+    
+
+
     # SHOW PAYOUT DATA
     # write 777
     stdscr.addstr(0, 122, " !!! ", back_red_color)
@@ -124,35 +135,34 @@ def play_slot(stdscr):
     "└─────────────┘",
     )
 
-    x = 127
-    i = 0
-    for y in range(9, 12):
-        stdscr.addstr(y, x, show_all_button[i])
-        i += 1
+    show_less_button = (
+    "┌──────────────┐",
+    "│ SHOW LESS(s) │",
+    "└──────────────┘",
+    )
 
 
-    # center machine#
-    scr_h, scr_w = stdscr.getmaxyx()  #screen height, screen width
-
-    top = (scr_h - machine_height) // 2 - 4  #first row the machine art starts to print
-    left = (scr_w - machine_width) // 2 - 2  #first column the machine art starts to print
-
-    # draw machine frame
-    for i, line in enumerate(MACHINE):
-        stdscr.addstr(top + i, left, line)
-
-    # buttons
-    stdscr.addstr(top + 13, left, "      SPACE = spin          Q = quit")
+    # DRAW SHOW ALL BUTTON(SAB = show all button)
+    SAB_x = 127
+    SAB_i = 0
+    for SAB_y in range(9, 12):
+        stdscr.addstr(SAB_y, SAB_x, show_all_button[SAB_i])
+        SAB_i += 1
 
 
-    # handle input
+    show_all = False
+
+
+    # HANDLE INPUT
     while True:
+        # quit
         ch = stdscr.getch()
         if ch == ord('q'):
             break
 
+        # spin animation
         delay = 0.1
-        if ch == ord(' '):  # spin animation
+        if ch == ord(' '):
 
             last_reel = [None, None, None]            
             for i in range(20):
@@ -173,25 +183,66 @@ def play_slot(stdscr):
                 delay *= 1.1
 
                 curses.flushinp()
-        stdscr.refresh()
 
 
+        # show all/less if 's' is pressed
         if ch == ord('s'):
-            for y in range(2, 22):
-                payout_data_syms = payout_data_list[y].strip().split(",")[0]
-                x = 127
-                for ch in payout_data_syms:
-                    if ch == "&":
-                        stdscr.addstr(y, x, ch)
-                        x += 1
-                    else:
-                        stdscr.addstr(y, x, ch, symbol_attrs[symbols.index(ch)])
-                        x += 1
+            if show_all == False:
+                show_all = True
+                # erase current show all button
+                for _SAB_Y in range(11, 8, -1):
+                    stdscr.addstr(_SAB_Y, SAB_x, " " * 15)
 
-                    payout_data_muls = payout_data_list[y].strip().split(",")[2]
-                    stdscr.addstr(y, x + 1, f"  x{payout_data_muls} COINS")
-    
+                stdscr.refresh()
+                time.sleep(0.25)
 
+                # print all payout info
+                for y in range(2, 22):
+                    payout_data_syms = payout_data_list[y].strip().split(",")[0]
+                    x = 127
+                    for ch in payout_data_syms:
+                        if ch == "&":
+                            stdscr.addstr(y, x, ch)
+                            x += 1
+                        else:
+                            stdscr.addstr(y, x, ch, symbol_attrs[symbols.index(ch)])
+                            x += 1
+
+                        payout_data_muls = payout_data_list[y].strip().split(",")[2]
+                        stdscr.addstr(y, x + 1, f"  x{payout_data_muls} COINS")
+
+                # draw show less button(SLB = show less button)
+                SLB_x = 127  # also 127, same as SAB but for readibility
+                SLB_i = 0
+                for SLB_y in range(23, 26):
+                    stdscr.addstr(SLB_y, SLB_x, show_less_button[SLB_i])
+                    SLB_i += 1
+                        
+
+            elif show_all == True:
+                show_all = False
+                # erase current show less button
+                for _SLB_Y in range(25, 22, -1):
+                    stdscr.addstr(_SLB_Y, SLB_x, " " * 16)
+
+                # erase abundant info
+                for y in range(8, 22):
+                    stdscr.addstr(y, 127, " " * 19)
+
+                # draw show all button again
+                SAB_x = 127
+                SAB_i = 0
+                for SAB_y in range(9, 12):
+                    stdscr.addstr(SAB_y, SAB_x, show_all_button[SAB_i])
+                    SAB_i += 1
+
+            curses.flushinp()
+
+
+        stdscr.refresh()
+        time.sleep(0.05)
+
+        
 
 
 
