@@ -38,6 +38,7 @@ machine_width = 43
 
 
 def play_slot(stdscr):
+    stdscr.clear()
     curses.curs_set(0)
     stdscr.nodelay(True)
 
@@ -94,8 +95,8 @@ def play_slot(stdscr):
     # center machine#
     scr_h, scr_w = stdscr.getmaxyx()  #screen height, screen width
 
-    top = (scr_h - machine_height) // 2 - 4  #first row the machine art starts to print
-    left = (scr_w - machine_width) // 2 - 2  #first column the machine art starts to print
+    top = (scr_h - machine_height) // 2 - 4  # first row the machine art starts to print
+    left = (scr_w - machine_width) // 2 - 2  # first column the machine art starts to print
 
     # draw machine frame
     for i, line in enumerate(MACHINE):

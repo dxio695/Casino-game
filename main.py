@@ -23,9 +23,12 @@ RESET   = "\033[0m"
 
 
 def main():
-
-#####################################################################################################################
+    curses.wrapper(main_loop)
     
+
+
+    
+    '''
     clear_screen()
     opening_cutscene()
 
@@ -98,7 +101,7 @@ def main():
 
 
         pass
-
+    '''
 
 
 
@@ -175,23 +178,67 @@ def opening_cutscene():
         time.sleep(0.18)
 
 
-def opening_gate(stdscr):
+
+
+
+def main_loop(stdscr):
+    pages = {
+        1: "start_page",
+        2: ("signupPage", "loginPage"),
+        3: ("games", "rank", "info")
+    }
+
+    current_page = pages[1]
+
+    while True:
+        stdscr.clear()
+
+        if current_page == pages[1]:
+            start_page(stdscr)
+            key = stdscr.getch()
+
+            if key == ord('1'):
+                signupPage(stdscr)
+                current_page = pages[2][0]  # "signupPage"
+
+            elif key == ord('2'):
+                loginPage(stdscr)
+                current_page = pages[2][1]  # "loginPage"
+
+        stdscr.refresh()
+
+
+        
+
+
+    
+def start_page(stdscr):
+    stdscr.addstr(15,56, "Sign up or Log in?(1/2)")
+    stdscr.refresh()
+
+
+
+def signupPage(stdscr):
     stdscr.clear()
+    stdscr.refresh()
+
+    stdscr.addstr(15, 56, "Please create your username:")
     
+    curses.echo()  # allow typing to show
+    username = stdscr.getstr(16, 56, 12).decode()
+    curses.noecho()
 
 
 
+def loginPage(stdscr):
+    stdscr.clear()
+    stdscr.refresh()
 
-    curses.wrapper(opening_gate)
+    stdscr.addstr(15, 56, "Please enter your username:")
 
-
-
-
-
-
-    
-
-
+    curses.echo()
+    username = stdscr.getstr(16, 56, 12).decode()
+    curses.noecho()
 
 
 
