@@ -209,8 +209,6 @@ def main_loop(stdscr):
 
 
         
-
-
     
 def start_page(stdscr):
     stdscr.addstr(15,56, "Sign up or Log in?(1/2)")
@@ -228,6 +226,7 @@ def signupPage(stdscr):
     username = stdscr.getstr(16, 56, 12).decode()
     curses.noecho()
 
+    return username
 
 
 def loginPage(stdscr):
@@ -242,6 +241,22 @@ def loginPage(stdscr):
 
 
 
+class User:
+    def __init__(self, username, coins=500):
+        self.username = username
+        self.coins = coins
+
+    def dict(self):
+        return {
+            "username": self.username,
+            "coins": self.coins,
+        }
+
+
+def store_user(stdscr):
+    username = signupPage(stdscr)
+    user = User(username)
+    dict_info = user.dict()
 
 
 
